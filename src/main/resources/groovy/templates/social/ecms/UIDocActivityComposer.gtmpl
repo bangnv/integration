@@ -1,0 +1,59 @@
+<%
+/*
+<!--
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+-->
+*/
+
+  import org.exoplatform.webui.form.UIFormStringInput;
+
+  def rcontext = _ctx.getRequestContext();
+      
+  def selectFileLabel = _ctx.appRes("UIComposerDocumentExtension.label.Select_File");
+  
+  def jsManager = rcontext.getJavascriptManager();
+  //jsManager.loadScriptResource("base"); //portal's problem, workaround for uicomponent.event()
+  def requireJS = jsManager.getRequireJS();
+  requireJS.require("SHARED/social-ui-activity-composer", "composer");
+    
+  def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
+  def isReady = currentActivityComposer.isReadyForPostingActivity();  
+  if (isReady) requireJS.addScripts("composer.UIComposer.handleShareButton($isReady);");
+%>
+<div id="<%=uicomponent.id%>">
+  <%
+    if(uicomponent.isDocumentReady()){		
+      %>
+	  
+      <span class="TopInputLink"></span>
+      <div class="InputDoc">
+        <span class="BrowsedDocument"><%=uicomponent.getDocumentName()%></span>
+        <a class="CloseIconLink" href="<%= uicomponent.event("RemoveDocument")%>">&nbsp;</a><br/>
+      </div>
+      
+      <%
+    } else {
+      %>
+	  
+        <span class="TopInputLink"></span>
+        <div class="InputDoc">
+          <a class="BrowseFile" href="<%= uicomponent.event("SelectDocument")%>">$selectFileLabel</a>
+        </div>
+		
+      <%
+    }
+  %>
+</div>
